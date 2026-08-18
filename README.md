@@ -174,6 +174,7 @@ Laptop appears invisible
 ---
 
 🤖 AI Pipeline
+```text
 
                  USER
                   │
@@ -213,7 +214,7 @@ Laptop appears invisible
                   │
                   ▼
              LIVE OUTPUT
-
+```
 ---
 
 ✨ Key Features
