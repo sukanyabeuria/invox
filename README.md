@@ -451,6 +451,7 @@ This can improve the quality of the invisibility effect significantly.
 
 🏗️ System Architecture
 
+```text
 ┌───────────────────────────────┐
 │            USER               │
 │  "Make my face invisible"     │
@@ -498,7 +499,7 @@ This can improve the quality of the invisibility effect significantly.
 ┌───────────────────────────────┐
 │       INVISIBLE OUTPUT         │
 └───────────────────────────────┘
-
+```
 ---
 
 🔄 Complete Project Workflow
