@@ -630,47 +630,50 @@ AI-Invisibility/
 📦 Installation
 
 Clone the repository:
-
+```
 git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
-
+```
+---
 Move into the project directory:
-
+```
 cd AI-Invisibility
-
+```
+---
 Create a virtual environment:
-
+```
 python -m venv venv
-
+```
+---
 Activate it.
 
 Windows
-
+```
 venv\Scripts\activate
-
+```
 Linux / macOS
-
+```
 source venv/bin/activate
-
+```
 Install dependencies:
-
+```
 pip install -r requirements.txt
-
+```
 ---
 
 ▶️ Running the Project
 
 Start the application using:
-
+```
 streamlit run app.py
-
+```
 The Streamlit application will open in the browser.
 
 Allow the application to access your webcam.
 
 Enter a command such as:
-
+```
 Make my face invisible
-
+```
 Then start the camera.
 
 ---
