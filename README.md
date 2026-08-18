@@ -596,7 +596,7 @@ Inpainting| Background reconstruction
 ---
 
 📁 Project Structure
-
+```text
 AI-Invisibility/
 │
 ├── app.py
@@ -624,7 +624,7 @@ AI-Invisibility/
 │   └── sample_images/
 │
 └── outputs/
-
+```
 ---
 
 📦 Installation
