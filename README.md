@@ -972,56 +972,56 @@ Follow the steps below to download the project from GitHub and run it using Jupy
 1. Clone the Repository
 
 Open Terminal, Command Prompt, or Anaconda Prompt and run:
-
+```
 git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
-
+```
 Replace "YOUR_USERNAME" with the GitHub username that owns the repository.
 
 Then move into the project folder:
-
+```
 cd AI-Invisibility
-
+```
 ---
 
 2. Create a Virtual Environment
 
 It is recommended to create a separate Python environment for the project.
-
+```
 python -m venv venv
-
+```
 Windows
-
+```
 venv\Scripts\activate
-
+```
 macOS / Linux
-
+````
 source venv/bin/activate
-
+````
 ---
 
 3. Install the Required Dependencies
 
 Install all required Python libraries:
-
+```
 pip install -r requirements.txt
-
+```
 The requirements file contains the libraries needed for:
-
+```
 - Computer Vision
 - Natural Language Processing
 - Object Detection
 - Image Segmentation
 - Image Processing
 - Jupyter Notebook
-
+```
 ---
 
 4. Install Jupyter Notebook
 
 If Jupyter Notebook is not already installed, run:
-
+```
 pip install notebook
-
+```
 Then start Jupyter:
 
 jupyter notebook
@@ -1033,13 +1033,13 @@ A Jupyter Notebook page will open in your web browser.
 5. Open the Project Notebook
 
 Inside Jupyter Notebook, navigate to the project folder:
-
+```
 AI-Invisibility
-
+```
 Open:
-
+```
 AI_Invisibility.ipynb
-
+```
 The notebook contains the complete AI pipeline.
 
 ---
@@ -1049,12 +1049,12 @@ The notebook contains the complete AI pipeline.
 Run the notebook cells from top to bottom.
 
 You can run a cell by:
-
+``
 - Clicking the Run button
 - Pressing "Shift + Enter"
-
+``
 The notebook will perform the following steps:
-
+```
 Load Libraries
       ↓
 Initialize AI Models
@@ -1076,7 +1076,7 @@ Remove Target Object
 Background Reconstruction
       ↓
 Display Invisible Effect
-
+```
 ---
 
 📷 Webcam Permission
@@ -1120,7 +1120,7 @@ The Computer Vision module then searches for the requested target in the webcam 
 ---
 
 🧠 AI Pipeline
-
+```
 The complete system works as:
 
 User Command
@@ -1142,7 +1142,7 @@ Object Removal
 Background Reconstruction
      ↓
 Invisible Object Output
-
+```
 ---
 
 ⚠️ Troubleshooting
@@ -1150,9 +1150,9 @@ Invisible Object Output
 Jupyter command not found
 
 Install Jupyter:
-
+```
 pip install notebook
-
+```
 Then run:
 
 jupyter notebook
@@ -1160,9 +1160,9 @@ jupyter notebook
 ModuleNotFoundError
 
 Run:
-
+``
 pip install -r requirements.txt
-
+``
 Make sure the virtual environment is activated.
 
 Webcam is not opening
