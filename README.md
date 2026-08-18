@@ -1236,7 +1236,7 @@ The project can be developed and demonstrated using Jupyter Notebook, while the 
 SUKANYA BEURIA 
 ANIMA SAU
 ISHIKA SHEET 
-MANISHA SAU
+MANISA SAU
 ⭐ Project Status
 
 Status: 🚧 In Development
