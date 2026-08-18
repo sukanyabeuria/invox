@@ -965,6 +965,273 @@ This project serves as a practical demonstration of how Artificial Intelligence,
 
 ---
 
+🚀 Clone and Run the Project in Jupyter Notebook
+
+Follow the steps below to download the project from GitHub and run it using Jupyter Notebook.
+
+1. Clone the Repository
+
+Open Terminal, Command Prompt, or Anaconda Prompt and run:
+
+git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
+
+Replace "YOUR_USERNAME" with the GitHub username that owns the repository.
+
+Then move into the project folder:
+
+cd AI-Invisibility
+
+---
+
+2. Create a Virtual Environment
+
+It is recommended to create a separate Python environment for the project.
+
+python -m venv venv
+
+Windows
+
+venv\Scripts\activate
+
+macOS / Linux
+
+source venv/bin/activate
+
+---
+
+3. Install the Required Dependencies
+
+Install all required Python libraries:
+
+pip install -r requirements.txt
+
+The requirements file contains the libraries needed for:
+
+- Computer Vision
+- Natural Language Processing
+- Object Detection
+- Image Segmentation
+- Image Processing
+- Jupyter Notebook
+
+---
+
+4. Install Jupyter Notebook
+
+If Jupyter Notebook is not already installed, run:
+
+pip install notebook
+
+Then start Jupyter:
+
+jupyter notebook
+
+A Jupyter Notebook page will open in your web browser.
+
+---
+
+5. Open the Project Notebook
+
+Inside Jupyter Notebook, navigate to the project folder:
+
+AI-Invisibility
+
+Open:
+
+AI_Invisibility.ipynb
+
+The notebook contains the complete AI pipeline.
+
+---
+
+6. Run the Notebook
+
+Run the notebook cells from top to bottom.
+
+You can run a cell by:
+
+- Clicking the Run button
+- Pressing "Shift + Enter"
+
+The notebook will perform the following steps:
+
+Load Libraries
+      ↓
+Initialize AI Models
+      ↓
+Start Webcam
+      ↓
+Process User Command
+      ↓
+NLP Processing
+      ↓
+Object Detection
+      ↓
+Object Segmentation
+      ↓
+Generate Object Mask
+      ↓
+Remove Target Object
+      ↓
+Background Reconstruction
+      ↓
+Display Invisible Effect
+
+---
+
+📷 Webcam Permission
+
+The project requires access to your computer's webcam.
+
+When running the project for the first time, make sure:
+
+- Your webcam is connected.
+- No other application is using the camera.
+- Camera permissions are enabled.
+- The correct camera index is being used.
+
+---
+
+🗣️ Example NLP Commands
+
+Once the system is running, try commands such as:
+
+Make my face invisible
+
+Hide the person
+
+Make the laptop invisible
+
+Hide the red object
+
+The NLP module interprets the command and identifies the target object.
+
+For example:
+
+Input:
+"Make my face invisible"
+
+NLP Output:
+Action → Hide
+Target → Face
+
+The Computer Vision module then searches for the requested target in the webcam frame.
+
+---
+
+🧠 AI Pipeline
+
+The complete system works as:
+
+User Command
+     ↓
+Natural Language Processing
+     ↓
+Target Identification
+     ↓
+Webcam Frame
+     ↓
+Object Detection
+     ↓
+Object Segmentation
+     ↓
+Target Mask
+     ↓
+Object Removal
+     ↓
+Background Reconstruction
+     ↓
+Invisible Object Output
+
+---
+
+⚠️ Troubleshooting
+
+Jupyter command not found
+
+Install Jupyter:
+
+pip install notebook
+
+Then run:
+
+jupyter notebook
+
+ModuleNotFoundError
+
+Run:
+
+pip install -r requirements.txt
+
+Make sure the virtual environment is activated.
+
+Webcam is not opening
+
+Check that:
+
+1. The camera is connected.
+2. Camera permissions are enabled.
+3. No other application is currently using the webcam.
+4. The correct camera index is configured.
+
+Model is not found
+
+Check the model path in the project configuration and follow the model-download instructions provided in the README.
+
+---
+
+📌 Alternative: Download ZIP
+
+If Git is not installed, you can download the repository manually.
+
+1. Open the GitHub repository.
+2. Click Code.
+3. Select Download ZIP.
+4. Extract the ZIP file.
+5. Open the extracted folder in Terminal or Anaconda Prompt.
+6. Install dependencies:
+
+pip install -r requirements.txt
+
+7. Start Jupyter:
+
+jupyter notebook
+
+8. Open:
+
+AI_Invisibility.ipynb
+
+---
+
+✅ Quick Start
+
+For users who already have Python and Git installed:
+
+git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
+cd AI-Invisibility
+pip install -r requirements.txt
+jupyter notebook
+
+Then open:
+
+AI_Invisibility.ipynb
+
+and run the cells from top to bottom.
+
+---
+
+💡 Recommended Environment
+
+Requirement| Recommended
+Python| 3.10+
+RAM| 8 GB or more
+Webcam| Required
+OS| Windows / Linux / macOS
+Jupyter| Latest stable version
+GPU| Optional, but recommended for faster AI processing
+
+The project can be developed and demonstrated using Jupyter Notebook, while the final application can later be integrated into a Streamlit interface for a more user-friendly experience.
+
 👩‍💻 Author
 SUKANYA BEURIA 
 ANIMA SAU
