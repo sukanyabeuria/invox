@@ -1,1245 +1,431 @@
-🪄 AI Invisibility System
+# 🪄 Invisibility Cloak — Real-Time Computer Vision Project
 
-Real-Time Computer Vision + Natural Language Processing Project
+A real-time invisibility effect built with Python and OpenCV, inspired by the classic "Harry Potter cloak" trick. Wear a solid-colored cloth in front of your webcam and the app makes it — and anything else that color — appear to vanish, replaced by the background behind you.
 
-An AI-powered real-time invisibility system that combines Computer Vision (CV) and Natural Language Processing (NLP) to make selected objects or people appear invisible through a laptop webcam.
-
-The system understands what the user wants to hide from a natural-language command, detects the requested target using Computer Vision, creates a precise segmentation mask, removes the target region, and reconstructs the background to produce an invisibility effect.
+The effect works entirely through classical computer vision: color-space conversion, masking, and image compositing. No deep learning models are involved in the current version.
 
 ---
 
-📌 Table of Contents
+## 📌 Table of Contents
 
-- "Project Overview" (#-project-overview)
-- "Problem Statement" (#-problem-statement)
-- "Project Objective" (#-project-objective)
-- "How the Project Works" (#-how-the-project-works)
-- "AI Pipeline" (#-ai-pipeline)
-- "Key Features" (#-key-features)
-- "Computer Vision" (#-computer-vision)
-- "Natural Language Processing" (#-natural-language-processing)
-- "Invisibility Technique" (#-invisibility-technique)
-- "System Architecture" (#-system-architecture)
-- "Project Workflow" (#-project-workflow)
-- "Example Commands" (#-example-commands)
-- "Technology Stack" (#-technology-stack)
-- "Project Structure" (#-project-structure)
-- "Installation" (#-installation)
-- "Running the Project" (#-running-the-project)
-- "Example" (#-example)
-- "Challenges" (#-challenges)
-- "Future Improvements" (#-future-improvements)
-- "Applications" (#-applications)
-- "Limitations" (#-limitations)
-- "Conclusion" (#-conclusion)
-
----
-
-🔍 Project Overview
-
-The AI Invisibility System is an experimental AI project designed to demonstrate how Computer Vision and Natural Language Processing can work together in a real-time application.
-
-The project uses a laptop or computer webcam as the input source.
-
-The user gives a command such as:
-
-«"Make my face invisible."»
-
-The system first uses NLP to understand the user's command.
-
-It extracts two important pieces of information:
-
-Action → Hide
-Target → Face
-
-The Computer Vision system then searches the webcam frame for the requested target.
-
-Once the target is detected, the system creates a mask around it and removes that region from the image.
-
-The background is then reconstructed using background information or image inpainting.
-
-The final result makes the selected object appear as if it has disappeared.
+- [Project Overview](#-project-overview)
+- [Problem Statement](#-problem-statement)
+- [Project Objective](#-project-objective)
+- [How the Project Works](#-how-the-project-works)
+- [AI Pipeline](#-ai-pipeline)
+- [Key Features](#-key-features)
+- [Computer Vision](#-computer-vision)
+- [Natural Language Processing](#-natural-language-processing)
+- [Invisibility Technique](#-invisibility-technique)
+- [System Architecture](#-system-architecture)
+- [Project Workflow](#-project-workflow)
+- [Example Commands](#-example-commands)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Installation](#-installation)
+- [Running the Project](#-running-the-project)
+- [Example](#-example)
+- [Challenges](#-challenges)
+- [Future Improvements](#-future-improvements)
+- [Applications](#-applications)
+- [Limitations](#-limitations)
+- [Conclusion](#-conclusion)
 
 ---
 
-❗ Problem Statement
+## 🔍 Project Overview
 
-Traditional Computer Vision applications usually perform predefined tasks such as:
+This project uses a laptop or computer webcam to create a real-time "invisibility" illusion.
 
-- Detecting faces
-- Detecting objects
-- Tracking people
-- Classifying images
+1. The app captures a still image of the empty background.
+2. You step into frame wearing a solid-colored cloth (calibrated for red by default).
+3. Every video frame is converted to the HSV color space and scanned for that color.
+4. Wherever the color is found, the app swaps those pixels with the matching pixels from the captured background.
+5. Everywhere else, the live camera feed is shown normally.
 
-However, these systems generally require the user to interact through buttons, predefined options, or fixed commands.
-
-This project explores a more natural interaction model.
-
-Instead of selecting an object manually, the user can simply tell the system what they want to hide.
-
-For example:
-
-"Hide my face."
-
-"Make the laptop invisible."
-
-"Make the person disappear."
-
-The system must understand the command and connect the user's intention with the corresponding visual object.
-
-Therefore, the project combines:
-
-Natural Language Understanding + Computer Vision + Image Processing
-
-into a single real-time AI system.
+The result: the cloak (and anything else that shade of red) appears to disappear, revealing the background behind it.
 
 ---
 
-🎯 Project Objective
+## ❗ Problem Statement
 
-The main objective is to develop a real-time AI application that can:
+A believable "invisibility" effect needs to:
 
-1. Capture live video from a webcam.
-2. Understand natural-language user commands.
-3. Identify the target object from the command.
-4. Detect the target using Computer Vision.
-5. Generate a segmentation mask.
-6. Remove the selected object.
-7. Reconstruct the background.
-8. Display the resulting invisibility effect in real time.
+- Tell the cloak apart from skin tones, clothing, and the rest of the scene in real time.
+- Keep working as lighting shifts slightly and the person moves.
+- Run smoothly on ordinary consumer hardware with no GPU required.
+- Be simple enough to calibrate for different cloak colors or lighting setups without touching the core code.
 
-The project demonstrates the integration of multiple AI technologies into one practical application.
+This project solves that with classic, lightweight color-segmentation techniques rather than a heavyweight detection model — trading some flexibility for speed and simplicity.
 
 ---
 
-⚙️ How the Project Works
+## 🎯 Project Objective
 
-The system consists of two major AI components:
+The goal is a small, real-time computer vision application that can:
 
-1. Natural Language Processing
+1. Capture a clean background frame from the webcam.
+2. Continuously capture live video.
+3. Detect a target color range (the cloak) in each frame.
+4. Build a mask isolating that color.
+5. Composite the background over the masked region and the live frame everywhere else.
+6. Display the result in a live window, with a hotkey to re-capture the background on the fly.
 
-NLP determines:
-
-«What does the user want to hide?»
-
-2. Computer Vision
-
-Computer Vision determines:
-
-«Where is that object in the camera frame?»
-
-The two components work together.
-
-For example:
-
-User:
-
-"Make the laptop invisible."
-
-        ↓
-
-NLP
-
-Action = Hide
-Target = Laptop
-
-        ↓
-
-Computer Vision
-
-Detect Laptop
-
-        ↓
-
-Segmentation
-
-Create Laptop Mask
-
-        ↓
-
-Image Processing
-
-Remove Laptop
-
-        ↓
-
-Background Reconstruction
-
-        ↓
-
-Final Output
-
-Laptop appears invisible
+A companion calibration tool (`calibrate.py`) lets you interactively find the right HSV range for your specific cloak and lighting before running the main effect.
 
 ---
 
-🤖 AI Pipeline
+## ⚙️ How the Project Works
+
+The system has two scripts that work together:
+
+**`calibrate.py`** — opens the webcam alongside a window of HSV sliders (trackbars). You adjust the sliders until the "Mask" preview clearly isolates your cloak from everything else, then press `q` to print the resulting `lower`/`upper` HSV values to the terminal.
+
+**`main.py`** — runs the actual effect:
+
+1. Opens the webcam and waits briefly for it to warm up.
+2. Captures ~60 frames to build a stable background image (you need to step out of frame for this).
+3. On each subsequent frame, converts the image to HSV and builds a mask using pre-set red HSV ranges.
+4. Cleans up the mask with morphological opening/closing and dilation to remove noise.
+5. Combines the background (where the mask is active) with the live frame (everywhere else).
+6. Displays the composited output in a live window.
+
+---
+
+## 🤖 AI Pipeline
+
+This section is labeled "AI Pipeline" for consistency with the project's terminology, but the current implementation is classical computer vision (color-space thresholding), not a trained model. The processing pipeline looks like this:
+
 ```text
-
-                 USER
-                  │
-                  ▼
-          Natural Language
-              Command
-                  │
-                  ▼
-       ┌────────────────────┐
-       │   NLP PROCESSING   │
-       └─────────┬──────────┘
-                 │
-          Target + Action
-                 │
-                 ▼
-        ┌───────────────────┐
-        │ COMPUTER VISION   │
-        └─────────┬─────────┘
-                  │
-                  ▼
-         Object Detection
-                  │
-                  ▼
-            Segmentation
-                  │
-                  ▼
-             Object Mask
-                  │
-                  ▼
-        Object Removal
-                  │
-                  ▼
-       Background Reconstruction
-                  │
-                  ▼
-          Invisible Effect
-                  │
-                  ▼
-             LIVE OUTPUT
+              WEBCAM
+                │
+                ▼
+     Capture Background Frame
+                │
+                ▼
+        Live Video Frame
+                │
+                ▼
+     Convert Frame to HSV
+                │
+                ▼
+   Threshold for Cloak Color
+        (red, two ranges)
+                │
+                ▼
+      Clean Mask (Morphology)
+                │
+                ▼
+   Composite: Background + Live Frame
+                │
+                ▼
+           LIVE OUTPUT
 ```
----
-
-✨ Key Features
-
-1. Real-Time Webcam Processing
-
-The system captures frames directly from the computer's webcam.
-
-No need to upload images manually.
 
 ---
 
-2. Natural Language Commands
+## ✨ Key Features
 
-Users can interact with the system using normal language.
+**1. Real-Time Webcam Processing**
+Runs directly on your live camera feed — no image upload needed.
 
-Example:
+**2. Color-Based Detection**
+Uses HSV thresholding across two ranges to reliably catch red, which wraps around the hue circle.
 
-Hide my face
+**3. Noise Cleanup**
+Morphological opening, closing, and dilation remove small holes and speckles from the raw color mask for a cleaner edge around the cloak.
 
-instead of selecting a "Face" button.
+**4. On-the-Fly Background Recapture**
+Press `b` while the app is running to re-capture the background without restarting — useful if lighting or your position changes.
 
----
-
-3. Object Detection
-
-The Computer Vision model detects objects present in the webcam frame.
-
-Possible targets can include:
-
-- Person
-- Face
-- Laptop
-- Phone
-- Bottle
-- Chair
-- Backpack
-- Other supported objects
+**5. Interactive Calibration Tool**
+`calibrate.py` provides live HSV sliders so you can tune the detection range for a different cloak color or lighting condition, rather than hardcoding values.
 
 ---
 
-4. Object Segmentation
+## 🧠 Computer Vision
 
-Instead of simply drawing a rectangle around an object, the system attempts to identify the actual pixels belonging to the object.
+The computer vision pipeline in `main.py` has these stages:
 
-This produces a more accurate invisibility effect.
+**Step 1 — Frame Capture**
+OpenCV reads frames from the webcam via `cv2.VideoCapture`.
 
----
+**Step 2 — Background Capture**
+The first ~60 frames (captured while you're out of shot) are used to build a reference background image, mirrored to match the live feed.
 
-5. Background Reconstruction
+**Step 3 — Color Masking**
+Each live frame is converted to HSV, and two `cv2.inRange` masks are combined to capture the full red hue range (which spans both ends of the hue circle: roughly 0–10 and 160–179).
 
-After the object is removed, the system reconstructs the missing region.
+**Step 4 — Mask Cleanup**
+`cv2.morphologyEx` (open, then close) and `cv2.dilate` smooth the mask, removing small noisy regions and filling small gaps.
 
-Possible techniques include:
-
-- Previous video frames
-- Background modeling
-- OpenCV inpainting
-- AI-based image inpainting
-
----
-
-6. Real-Time Invisibility Effect
-
-The selected object is continuously removed from the live video feed.
-
-For example:
-
-Original:
-
-        👤
-       /█\
-        █
-       / \
-
-        ↓
-
-Command:
-
-"Make the person invisible."
-
-        ↓
-
-Output:
-
-   Background remains visible
-   Person is visually removed
+**Step 5 — Compositing**
+`cv2.bitwise_and` extracts the background where the mask is active and the live frame elsewhere; `cv2.addWeighted` merges the two into the final output.
 
 ---
 
-🧠 Computer Vision
+## 🗣️ Natural Language Processing
 
-Computer Vision is responsible for understanding the visual information coming from the webcam.
+Natural language command input is **not yet implemented** in this project. Currently, the app is controlled with simple keyboard shortcuts (`q` to quit, `b` to recapture the background) rather than typed or spoken commands like "make my face invisible."
 
-The Computer Vision pipeline contains several stages.
-
-Step 1 — Frame Capture
-
-OpenCV captures frames from the webcam.
-
-Camera → Frame → Processing
-
-Step 2 — Object Detection
-
-A detection model identifies objects in the frame.
-
-The model returns information such as:
-
-Object: Laptop
-Confidence: 0.91
-Location: Bounding Box
-
-Step 3 — Segmentation
-
-The system generates a pixel-level mask for the selected object.
-
-Example:
-
-0 = Background
-1 = Target Object
-
-Step 4 — Object Removal
-
-The target pixels are removed from the frame.
-
-Step 5 — Background Reconstruction
-
-The missing region is filled using background information or an inpainting algorithm.
+Adding an NLP layer that lets a user type or say what to hide, and mapping that to an object-detection target, is listed as a planned direction — see [Future Improvements](#-future-improvements).
 
 ---
 
-🗣️ Natural Language Processing
+## 🪄 Invisibility Technique
 
-NLP allows the user to communicate with the system using natural language.
+The invisibility effect is a visual illusion created through image compositing — not physical invisibility.
 
-The NLP module processes the user's command and extracts:
+**Current technique — Chroma-key style color substitution:**
+The system detects a specific color range (the cloak) and replaces those pixels with a previously captured background image. This is the same principle behind green-screen compositing, applied per-frame in real time.
 
-Intent
+This approach works best when:
 
-What action should be performed?
+- The camera is stationary.
+- The background stays relatively static.
+- The cloak color is distinct from everything else in the scene (skin, clothing, furniture).
 
-Example:
-
-hide
-remove
-make invisible
-disappear
-
-Target
-
-What should be hidden?
-
-Example:
-
-face
-person
-laptop
-phone
-bottle
+Other reconstruction techniques (previous-frame estimation, OpenCV inpainting, AI-based inpainting) are possible extensions — see [Future Improvements](#-future-improvements).
 
 ---
 
-Example NLP Processing
-
-Input:
-
-"Can you make my laptop invisible?"
-
-NLP output:
-
-{
-  "action": "hide",
-  "target": "laptop"
-}
-
-Another example:
-
-"Please hide my face."
-
-Output:
-
-{
-  "action": "hide",
-  "target": "face"
-}
-
-This structured information is then passed to the Computer Vision module.
-
----
-
-🪄 Invisibility Technique
-
-The invisibility effect is not actual physical invisibility.
-
-It is a visual illusion created through image processing.
-
-The system removes the selected object from the camera frame and reconstructs the region behind it.
-
-There can be multiple approaches.
-
-Method 1 — Background Modeling
-
-The system maintains information about the background.
-
-When the target is detected, the corresponding region is replaced with background information.
-
-This works particularly well when the camera is stationary.
-
----
-
-Method 2 — Previous Frames
-
-Previous frames can be used to estimate what the background looked like before the object occupied the region.
-
-This can produce a better result when the background remains relatively stable.
-
----
-
-Method 3 — Image Inpainting
-
-OpenCV inpainting can be used to fill the masked region.
-
-The algorithm estimates nearby pixels and generates a visually continuous region.
-
----
-
-Method 4 — AI Inpainting
-
-A future version can use an AI-based image-generation/inpainting model to reconstruct complex backgrounds.
-
-This can improve the quality of the invisibility effect significantly.
-
----
-
-🏗️ System Architecture
+## 🏗️ System Architecture
 
 ```text
 ┌───────────────────────────────┐
-│            USER               │
-│  "Make my face invisible"     │
+│           WEBCAM               │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│        NLP PROCESSOR           │
-│                               │
-│ Intent → Hide                 │
-│ Target → Face                 │
+│   BACKGROUND CAPTURE (once)    │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│        WEBCAM INPUT            │
+│        LIVE FRAME (loop)       │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│      OBJECT DETECTION          │
+│      HSV COLOR CONVERSION      │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│       OBJECT SEGMENTATION      │
+│      RED COLOR MASKING         │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│       TARGET MASK              │
+│    MORPHOLOGICAL CLEANUP       │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│     OBJECT REMOVAL             │
+│  COMPOSITE BACKGROUND + FRAME  │
 └───────────────┬───────────────┘
                 │
                 ▼
 ┌───────────────────────────────┐
-│ BACKGROUND RECONSTRUCTION      │
-└───────────────┬───────────────┘
-                │
-                ▼
-┌───────────────────────────────┐
-│       INVISIBLE OUTPUT         │
+│         LIVE DISPLAY           │
 └───────────────────────────────┘
 ```
----
-
-🔄 Complete Project Workflow
-
-Step 1
-
-The user opens the application.
-
-Step 2
-
-The application accesses the webcam.
-
-Step 3
-
-The user enters a natural-language command.
-
-Example:
-
-Make my face invisible
-
-Step 4
-
-NLP analyzes the command.
-
-Action → Hide
-Target → Face
-
-Step 5
-
-The Computer Vision model analyzes the webcam frame.
-
-Step 6
-
-The requested target is detected.
-
-Step 7
-
-A segmentation mask is created.
-
-Step 8
-
-The target region is removed.
-
-Step 9
-
-The background is reconstructed.
-
-Step 10
-
-The processed frame is displayed.
-
-Step 11
-
-The process repeats continuously for every webcam frame.
 
 ---
 
-💬 Example Commands
+## 🔄 Project Workflow
 
-The system should support commands such as:
-
-Make my face invisible.
-
-Hide my face.
-
-Remove the person.
-
-Make the person disappear.
-
-Hide the laptop.
-
-Make the laptop invisible.
-
-Hide the red object.
-
-Make the bottle disappear.
-
-The NLP module should be able to recognize different ways of expressing the same intention.
+1. Run `calibrate.py` (optional) to find the right HSV range for your cloak and lighting.
+2. Update the HSV values in `main.py` if they differ from the defaults.
+3. Run `main.py`.
+4. Step out of frame for a couple of seconds while the background is captured.
+5. Step back in wearing the colored cloak.
+6. The cloak area is replaced with the captured background in real time.
+7. Press `b` at any time to re-capture the background.
+8. Press `q` to quit.
 
 ---
 
-🛠️ Technology Stack
+## 💬 Example Commands
 
-Technology| Purpose
-Python| Main programming language
-OpenCV| Webcam and image processing
-YOLO| Object detection
-Segmentation Model| Pixel-level object masking
-NLP| Understanding user commands
-Streamlit| Web interface
-NumPy| Numerical image processing
-Inpainting| Background reconstruction
+The project is controlled with keyboard shortcuts while the live window is focused:
+
+| Key | Action |
+|---|---|
+| `q` | Quit the application |
+| `b` | Re-capture the background |
+
+(In `calibrate.py`, the six trackbars set the HSV `min`/`max` bounds live, and `q` prints the final `lower`/`upper` arrays to the terminal.)
 
 ---
 
-📁 Project Structure
+## 🛠️ Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Python | Main programming language |
+| OpenCV (`cv2`) | Webcam capture, color conversion, masking, display |
+| NumPy | Array operations for masks and image data |
+
+---
+
+## 📁 Project Structure
+
 ```text
-AI-Invisibility/
+invox/
 │
-├── app.py
-├── requirements.txt
 ├── README.md
 ├── .gitignore
 │
-├── models/
-│   └── model files
-│
-├── src/
-│   ├── camera.py
-│   ├── detector.py
-│   ├── segmenter.py
-│   ├── nlp_processor.py
-│   ├── command_parser.py
-│   ├── background.py
-│   └── invisibility.py
-│
-├── utils/
-│   ├── image_utils.py
-│   └── config.py
-│
-├── data/
-│   └── sample_images/
-│
-└── outputs/
+└── invisible_cloak_project/
+    ├── main.py         # Runs the real-time invisibility effect
+    ├── calibrate.py    # Interactive HSV calibration tool
+    ├── README.md
+    └── .gitignore
 ```
+
 ---
 
-📦 Installation
+## 📦 Installation
 
 Clone the repository:
+
+```bash
+git clone https://github.com/sukanyabeuria/invox.git
+cd invox/invisible_cloak_project
 ```
-git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
-```
----
-Move into the project directory:
-```
-cd AI-Invisibility
-```
----
-Create a virtual environment:
-```
+
+Create and activate a virtual environment (recommended):
+
+```bash
 python -m venv venv
 ```
----
-Activate it.
 
-Windows
-```
+Windows:
+
+```bash
 venv\Scripts\activate
 ```
-Linux / macOS
-```
+
+macOS / Linux:
+
+```bash
 source venv/bin/activate
 ```
-Install dependencies:
-```
-pip install -r requirements.txt
-```
----
 
-▶️ Running the Project
+Install the required libraries:
 
-Start the application using:
+```bash
+pip install opencv-python numpy
 ```
-streamlit run app.py
-```
-The Streamlit application will open in the browser.
-
-Allow the application to access your webcam.
-
-Enter a command such as:
-```
-Make my face invisible
-```
-Then start the camera.
 
 ---
 
-🖥️ Application Interface
+## ▶️ Running the Project
 
-The interface should contain:
+**1. (Optional) Calibrate your cloak color**
 
-Input Section
+```bash
+python calibrate.py
+```
 
-- Natural-language command box
-- Start Camera button
-- Stop Camera button
-- Reset button
+Adjust the HSV sliders until only the cloak shows up white in the "Mask" window, then press `q` and note the printed `lower`/`upper` values.
 
-Configuration
+**2. Run the invisibility effect**
 
-- Detection confidence
-- Invisibility mode
-- Processing settings
+```bash
+python main.py
+```
 
-Output
+Step out of frame while the background is captured (a couple of seconds), then step back in wearing the cloak.
 
-Display:
-
-Original Camera       Processed Camera
-───────────────       ────────────────
-Live webcam           Invisible effect
-
-Additional information:
-
-Command: Make my face invisible
-
-Target: Face
-
-Action: Hide
-
-Confidence: 92%
-
-FPS: 24
+- Press `b` to re-capture the background at any time.
+- Press `q` to quit.
 
 ---
 
-📊 Example
+## 📊 Example
 
-Input
+**Input:** A person wearing a red cloth steps in front of the camera.
 
-User enters:
+**Processing:**
 
-Make my face invisible
+- HSV conversion isolates the red hue range.
+- The red region is masked and cleaned up.
+- That region is replaced with the pre-captured background.
 
-NLP
-
-Action = hide
-Target = face
-
-Computer Vision
-
-Face detected
-Confidence = 0.94
-
-Segmentation
-
-Face mask generated
-
-Image Processing
-
-Face removed
-Background reconstructed
-
-Final Output
-
-The user's face appears visually invisible while the rest of the scene remains visible.
+**Output:** The red cloth appears to vanish, revealing the background behind the person, while the rest of the scene (face, arms, surroundings) stays visible normally.
 
 ---
 
-🚧 Challenges
+## 🚧 Challenges
 
-Developing this system involves several technical challenges.
+**1. Color Ambiguity**
+Any other red object or clothing in frame will also be masked out, since detection is purely color-based.
 
-1. Accurate Object Detection
+**2. Lighting Sensitivity**
+Changes in lighting can shift how a color appears in HSV space, requiring re-calibration.
 
-The system needs to correctly identify the object requested by the user.
+**3. Mask Noise**
+Raw color masks often contain small holes and speckles, which is why morphological cleanup is needed before compositing.
 
-2. Segmentation Accuracy
-
-A bounding box is not enough for a realistic invisibility effect.
-
-The segmentation mask must closely follow the object's shape.
-
-3. Background Reconstruction
-
-Removing an object is easier when the background is simple.
-
-Complex backgrounds can make reconstruction difficult.
-
-4. Real-Time Performance
-
-Object detection and segmentation can be computationally expensive.
-
-The system therefore needs lightweight models and optimized processing.
-
-5. NLP Understanding
-
-Users can express the same command in many different ways.
-
-For example:
-
-Hide my face
-
-and
-
-Can you make my face disappear?
-
-should produce the same result.
+**4. Background Stability**
+The illusion only holds up if the captured background still matches the current camera view — camera movement or background changes require a re-capture.
 
 ---
 
-🔮 Future Improvements
+## 🔮 Future Improvements
 
-The project can be expanded with several advanced features.
+These are potential directions for extending the project beyond the current color-based approach:
 
-Voice Commands
-
-Instead of typing:
-
-"Hide my face."
-
-the user could speak the command.
-
-Possible pipeline:
-
-Voice
- ↓
-Speech Recognition
- ↓
-NLP
- ↓
-Computer Vision
- ↓
-Invisibility
-
-Multi-Object Invisibility
-
-Allow the user to hide multiple objects simultaneously.
-
-Example:
-
-Hide the laptop and my phone.
-
-Gesture Control
-
-The user could use hand gestures to activate invisibility.
-
-Better AI Inpainting
-
-Use advanced generative AI models for realistic background reconstruction.
-
-Custom Object Detection
-
-Allow users to train the system to recognize their own objects.
-
-Face Privacy Mode
-
-A dedicated mode could automatically hide faces for privacy demonstrations.
-
-AR Integration
-
-The project could eventually become an augmented-reality application.
+- **Natural Language Commands** — let the user type or speak what to hide (e.g. "hide my face"), parsed by an NLP module into an action + target.
+- **Object Detection & Segmentation** — replace fixed color thresholding with a detection/segmentation model (e.g. YOLO + a segmentation head) so any recognizable object, not just a specific color, can be hidden.
+- **AI-Based Background Inpainting** — use a generative inpainting model instead of a static captured background, so the effect works even with a moving camera or changing scene.
+- **Web Interface** — wrap the effect in a Streamlit (or similar) app for easier setup and sharing, instead of a local OpenCV window.
+- **Voice Control** — add speech recognition ahead of the NLP layer.
+- **Multi-Object / Multi-Color Support** — hide more than one color or object at once.
 
 ---
 
-🌍 Possible Applications
+## 🌍 Applications
 
-Although the project is primarily educational, the underlying technologies have practical applications.
+While primarily an educational computer vision demo, the underlying technique has practical uses:
 
-Privacy Protection
-
-Automatically hide faces or sensitive objects in video.
-
-Video Conferencing
-
-Create privacy-aware backgrounds and object masking.
-
-Content Creation
-
-Create special visual effects for videos.
-
-Augmented Reality
-
-Create interactive disappearing-object effects.
-
-Computer Vision Research
-
-Demonstrate object detection, segmentation, tracking, and image reconstruction.
-
-Human-Computer Interaction
-
-Demonstrate how natural-language commands can control computer-vision systems.
+- **Content creation** — special-effects style shots for videos.
+- **Computer vision education** — a hands-on introduction to color spaces, masking, and image compositing.
+- **Prototype for chroma-key tools** — a lightweight, camera-only alternative to a physical green screen.
 
 ---
 
-⚠️ Limitations
+## ⚠️ Limitations
 
-The project creates a visual invisibility effect; it does not make physical objects actually invisible.
-
-The quality of the effect depends on:
-
-- Camera quality
-- Lighting
-- Background complexity
-- Object movement
-- Detection accuracy
-- Segmentation accuracy
-- Computer hardware
-- Model performance
-
-A stationary camera and relatively stable background generally produce better results.
+- This creates a *visual* illusion, not physical invisibility.
+- Any object matching the target color range will also be hidden, whether intended or not.
+- Requires a relatively stable camera position and background.
+- Sensitive to lighting changes, shadows, and background complexity.
+- Skin tones or other objects with similar hue/saturation to the cloak can trigger false masking.
 
 ---
 
-🔐 Privacy Considerations
+## 🏁 Conclusion
 
-The application uses the webcam for real-time processing.
+This project recreates the classic "invisibility cloak" effect using nothing but OpenCV and basic color-space image processing: capture a background, detect a target color in HSV space, clean up the resulting mask, and composite the background back in over that region in real time.
 
-The intended implementation should process frames locally whenever possible.
-
-The project should not store webcam footage unless explicitly required.
-
-If recordings are added in a future version, users should be clearly informed before data is saved.
+It's a compact, dependency-light demonstration of how far simple, classical computer vision techniques can go — and a solid base to build on if extended toward object detection, segmentation, or natural-language control in the future.
 
 ---
 
-📚 Learning Outcomes
+## 👩‍💻 Authors
 
-This project provides practical experience with:
+- Sukanya Beuria
+- Anima Sau
+- Ishika Sheet
+- Manisa Sau
 
-- Computer Vision
-- Object Detection
-- Image Segmentation
-- Image Processing
-- Image Inpainting
-- Natural Language Processing
-- Intent Detection
-- Entity Extraction
-- Real-Time Video Processing
-- Python
-- Streamlit
-- AI Model Integration
-- Software Architecture
+## ⭐ Project Status
 
----
-
-🎓 Why This Project Is Different
-
-Instead of creating only an object-detection project or only an NLP chatbot, this project connects both technologies.
-
-The important concept is:
-
-NLP understands the user's intention.
-
-Computer Vision understands the physical scene.
-
-Image Processing creates the visual result.
-
-Therefore:
-
-NLP + Computer Vision + Image Processing = AI Invisibility System
-
----
-
-🏁 Conclusion
-
-The AI Invisibility System demonstrates how multiple AI technologies can be combined to create an interactive real-time application.
-
-The user communicates with the system using natural language.
-
-NLP interprets the command and determines what needs to be hidden.
-
-Computer Vision locates the requested object in the webcam feed.
-
-Segmentation identifies the exact region occupied by the object.
-
-Image processing then removes the selected region and reconstructs the background.
-
-The final result creates the illusion that the selected object has disappeared.
-
-This project serves as a practical demonstration of how Artificial Intelligence, Computer Vision, NLP, and real-time image processing can work together in a single application.
-
----
-
-🚀 Clone and Run the Project in Jupyter Notebook
-
-Follow the steps below to download the project from GitHub and run it using Jupyter Notebook.
-
-1. Clone the Repository
-
-Open Terminal, Command Prompt, or Anaconda Prompt and run:
-```
-git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
-```
-Replace "YOUR_USERNAME" with the GitHub username that owns the repository.
-
-Then move into the project folder:
-```
-cd AI-Invisibility
-```
----
-
-2. Create a Virtual Environment
-
-It is recommended to create a separate Python environment for the project.
-```
-python -m venv venv
-```
-Windows
-```
-venv\Scripts\activate
-```
-macOS / Linux
-````
-source venv/bin/activate
-````
----
-
-3. Install the Required Dependencies
-
-Install all required Python libraries:
-```
-pip install -r requirements.txt
-```
-The requirements file contains the libraries needed for:
-```
-- Computer Vision
-- Natural Language Processing
-- Object Detection
-- Image Segmentation
-- Image Processing
-- Jupyter Notebook
-```
----
-
-4. Install Jupyter Notebook
-
-If Jupyter Notebook is not already installed, run:
-```
-pip install notebook
-```
-Then start Jupyter:
-
-jupyter notebook
-
-A Jupyter Notebook page will open in your web browser.
-
----
-
-5. Open the Project Notebook
-
-Inside Jupyter Notebook, navigate to the project folder:
-```
-AI-Invisibility
-```
-Open:
-```
-AI_Invisibility.ipynb
-```
-The notebook contains the complete AI pipeline.
-
----
-
-6. Run the Notebook
-
-Run the notebook cells from top to bottom.
-
-You can run a cell by:
-``
-- Clicking the Run button
-- Pressing "Shift + Enter"
-``
-The notebook will perform the following steps:
-```
-Load Libraries
-      ↓
-Initialize AI Models
-      ↓
-Start Webcam
-      ↓
-Process User Command
-      ↓
-NLP Processing
-      ↓
-Object Detection
-      ↓
-Object Segmentation
-      ↓
-Generate Object Mask
-      ↓
-Remove Target Object
-      ↓
-Background Reconstruction
-      ↓
-Display Invisible Effect
-```
----
-
-📷 Webcam Permission
-
-The project requires access to your computer's webcam.
-
-When running the project for the first time, make sure:
-
-- Your webcam is connected.
-- No other application is using the camera.
-- Camera permissions are enabled.
-- The correct camera index is being used.
-
----
-
-🗣️ Example NLP Commands
-
-Once the system is running, try commands such as:
-
-Make my face invisible
-
-Hide the person
-
-Make the laptop invisible
-
-Hide the red object
-
-The NLP module interprets the command and identifies the target object.
-
-For example:
-
-Input:
-"Make my face invisible"
-
-NLP Output:
-Action → Hide
-Target → Face
-
-The Computer Vision module then searches for the requested target in the webcam frame.
-
----
-
-🧠 AI Pipeline
-```
-The complete system works as:
-
-User Command
-     ↓
-Natural Language Processing
-     ↓
-Target Identification
-     ↓
-Webcam Frame
-     ↓
-Object Detection
-     ↓
-Object Segmentation
-     ↓
-Target Mask
-     ↓
-Object Removal
-     ↓
-Background Reconstruction
-     ↓
-Invisible Object Output
-```
----
-
-⚠️ Troubleshooting
-
-Jupyter command not found
-
-Install Jupyter:
-```
-pip install notebook
-```
-Then run:
-
-jupyter notebook
-
-ModuleNotFoundError
-
-Run:
-``
-pip install -r requirements.txt
-``
-Make sure the virtual environment is activated.
-
-Webcam is not opening
-
-Check that:
-
-1. The camera is connected.
-2. Camera permissions are enabled.
-3. No other application is currently using the webcam.
-4. The correct camera index is configured.
-
-Model is not found
-
-Check the model path in the project configuration and follow the model-download instructions provided in the README.
-
----
-
-📌 Alternative: Download ZIP
-
-If Git is not installed, you can download the repository manually.
-
-1. Open the GitHub repository.
-2. Click Code.
-3. Select Download ZIP.
-4. Extract the ZIP file.
-5. Open the extracted folder in Terminal or Anaconda Prompt.
-6. Install dependencies:
-
-pip install -r requirements.txt
-
-7. Start Jupyter:
-
-jupyter notebook
-
-8. Open:
-
-AI_Invisibility.ipynb
-
----
-
-✅ Quick Start
-
-For users who already have Python and Git installed:
-
-git clone https://github.com/YOUR_USERNAME/AI-Invisibility.git
-cd AI-Invisibility
-pip install -r requirements.txt
-jupyter notebook
-
-Then open:
-
-AI_Invisibility.ipynb
-
-and run the cells from top to bottom.
-
----
-
-💡 Recommended Environment
-
-Requirement| Recommended
-Python| 3.10+
-RAM| 8 GB or more
-Webcam| Required
-OS| Windows / Linux / macOS
-Jupyter| Latest stable version
-GPU| Optional, but recommended for faster AI processing
-
-The project can be developed and demonstrated using Jupyter Notebook, while the final application can later be integrated into a Streamlit interface for a more user-friendly experience.
-
-👩‍💻 Author
-SUKANYA BEURIA 
-ANIMA SAU
-ISHIKA SHEET 
-MANISA SAU
-⭐ Project Status
-
-Status: 🚧 In Development
+**Status:** 🚧 In Development
 
 Future versions will improve:
 
