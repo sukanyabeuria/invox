@@ -6,7 +6,7 @@ The effect works entirely through classical computer vision: color-space convers
 
 ---
 
-## 📌 Table of Contents
+## 📌 Table of Contents 
 
 - [Project Overview](#-project-overview)
 - [Problem Statement](#-problem-statement)
